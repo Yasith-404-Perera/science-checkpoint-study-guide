@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambridge Checkpoint Science — Complete Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --text: #1a1814;
+    --muted: #6b6860;
+    --border: #e2ddd6;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+
+    /* Biology */
+    --bio: #2d6a4f;
+    --bio-light: #d8f3dc;
+    --bio-mid: #52b788;
+
+    /* Chemistry */
+    --chem: #7b2d8b;
+    --chem-light: #f3d8fa;
+    --chem-mid: #b06bbf;
+
+    /* Physics */
+    --phys: #1b4d7a;
+    --phys-light: #dbeafe;
+    --phys-mid: #4a8fc4;
+
+    /* Earth & Space */
+    --earth: #8a4914;
+    --earth-light: #fde8d0;
+    --earth-mid: #c47c3a;
+
+    /* Current strand colours (updated by JS) */
+    --accent: #2d6a4f;
+    --accent-light: #d8f3dc;
+    --accent-mid: #52b788;
+
+    --warn: #b5451b;
+    --warn-light: #fde8df;
+    --gold: #8a6914;
+    --gold-light: #fef3c7;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--accent);
+    color: #fff;
+    padding: 3.5rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s ease;
+  }
+  .hero::before {
+    content: attr(data-word);
+    position: absolute;
+    right: -20px;
+    top: -10px;
+    font-family: var(--serif);
+    font-size: 130px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.06);
+    letter-spacing: -4px;
+    pointer-events: none;
+    line-height: 1;
+    transition: content 0.3s;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .hero p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .hero-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .hero-pill {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: var(--mono);
+  }
+
+  /* STRAND SWITCHER */
+  .strand-bar {
+    display: flex;
+    background: #1a1814;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .strand-bar::-webkit-scrollbar { display: none; }
+  .strand-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-bottom: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .strand-btn:hover { color: rgba(255,255,255,0.8); }
+  .strand-btn.active { color: #fff; }
+  .strand-btn[data-strand="bio"].active  { border-bottom-color: var(--bio-mid);   color: #fff; }
+  .strand-btn[data-strand="chem"].active { border-bottom-color: var(--chem-mid);  color: #fff; }
+  .strand-btn[data-strand="phys"].active { border-bottom-color: var(--phys-mid);  color: #fff; }
+  .strand-btn[data-strand="earth"].active{ border-bottom-color: var(--earth-mid); color: #fff; }
+  .strand-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .strand-btn[data-strand="bio"]  .strand-dot { background: var(--bio-mid); }
+  .strand-btn[data-strand="chem"] .strand-dot { background: var(--chem-mid); }
+  .strand-btn[data-strand="phys"] .strand-dot { background: var(--phys-mid); }
+  .strand-btn[data-strand="earth"].strand-dot { background: var(--earth-mid); }
+
+  /* TOPIC NAV */
+  .toc {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 47px;
+    z-index: 100;
+  }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc a {
+    display: block;
+    padding: 12px 15px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .toc a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* STRAND PANELS */
+  .strand-panel { display: none; }
+  .strand-panel.active { display: block; }
+
+  /* LAYOUT */
+  .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+  /* SECTION */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent-mid);
+    background: var(--accent-light);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .freq-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .freq-high { background: var(--warn-light); color: var(--warn); }
+  .freq-med  { background: var(--gold-light); color: var(--gold); }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .card p, .card li { font-size: 14px; line-height: 1.7; color: var(--text); }
+  .card ul { padding-left: 1.2rem; }
+  .card ul li { margin-bottom: 5px; }
+
+  /* KEY FACT BOX */
+  .key-fact {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: var(--accent);
+    line-height: 1.6;
+  }
+  .key-fact strong { font-weight: 500; }
+
+  /* WARN BOX */
+  .warn-box {
+    background: var(--warn-light);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: var(--warn);
+    line-height: 1.6;
+  }
+
+  /* EXAM TIP */
+  .exam-tip {
+    background: var(--gold-light);
+    border: 1px solid #d4a827;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 13px;
+    color: var(--gold);
+    line-height: 1.6;
+  }
+  .exam-tip::before {
+    content: 'Exam tip — ';
+    font-weight: 500;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  /* TABLE */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 14px 0;
+  }
+  .compare-table th {
+    background: var(--accent);
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .compare-table th:first-child { border-radius: 8px 0 0 0; }
+  .compare-table th:last-child  { border-radius: 0 8px 0 0; }
+  .compare-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .compare-table tr:nth-child(even) td { background: var(--bg); }
+
+  /* EQUATION */
+  .equation {
+    background: #1a1814;
+    color: #a8e6cf;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 12px 0;
+    letter-spacing: 0.02em;
+  }
+
+  /* FLOW */
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  .flow-step {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid var(--accent-mid);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-weight: 500;
+  }
+  .flow-arrow { color: var(--muted); font-size: 16px; }
+
+  /* GRID */
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* SUMMARY BAND */
+  .summary-band {
+    background: #dbeafe;
+    border: 1px solid #93c5fd;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .summary-band h4 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--phys);
+    margin-bottom: 8px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .summary-band ul { padding-left: 1.2rem; }
+  .summary-band li { font-size: 13px; color: #1e3a5f; margin-bottom: 4px; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--text);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+
+  @media print { .strand-bar, .toc { display: none; } body { background: white; } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero" data-word="SCIENCE" id="hero">
+  <div class="hero-label">Cambridge Lower Secondary Checkpoint · Science 0893</div>
+  <h1 id="hero-title">Complete Science<br>Study Guide</h1>
+  <p id="hero-desc">All four strands covered in full depth: Biology, Chemistry, Physics, and Earth &amp; Space — exam tips, model answers, and every examinable concept for an Outstanding score.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">Stages 7–9</span>
+    <span class="hero-pill">Paper 1 &amp; Paper 2</span>
+    <span class="hero-pill">4 strands</span>
+    <span class="hero-pill">Exam tips throughout</span>
+  </div>
+</div>
+
+<!-- STRAND SWITCHER -->
+<div class="strand-bar">
+  <button class="strand-btn active" data-strand="bio"   onclick="switchStrand('bio')">  <span class="strand-dot"></span>Biology</button>
+  <button class="strand-btn"        data-strand="chem"  onclick="switchStrand('chem')"> <span class="strand-dot"></span>Chemistry</button>
+  <button class="strand-btn"        data-strand="phys"  onclick="switchStrand('phys')"> <span class="strand-dot"></span>Physics</button>
+  <button class="strand-btn"        data-strand="earth" onclick="switchStrand('earth')"><span class="strand-dot"></span>Earth &amp; Space</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════ BIOLOGY ═══ -->
+<div class="strand-panel active" id="panel-bio">
+  <nav class="toc">
+    <a href="#bio-cells">Cells</a>
+    <a href="#bio-transport">Water Transport</a>
+    <a href="#bio-photosynthesis">Photosynthesis</a>
+    <a href="#bio-respiration">Respiration</a>
+    <a href="#bio-genetics">Genetics</a>
+    <a href="#bio-body">Body Systems</a>
+    <a href="#bio-ecosystems">Ecosystems</a>
+    <a href="#bio-health">Health &amp; Disease</a>
+    <a href="#bio-technique">Exam Technique</a>
+  </nav>
+  <div class="container">
+
+    <!-- CELLS -->
+    <div class="section" id="bio-cells">
+      <div class="section-header">
+        <span class="section-num">B.01</span>
+        <h2>Cells &amp; Organisation</h2>
+        <span class="freq-tag freq-med">Medium frequency</span>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Animal cell components</h3>
+          <ul>
+            <li><strong>Nucleus</strong> — contains DNA; controls cell activity</li>
+            <li><strong>Cytoplasm</strong> — site of most chemical reactions</li>
+            <li><strong>Cell membrane</strong> — controls what enters/leaves</li>
+            <li><strong>Mitochondria</strong> — site of aerobic respiration; releases energy</li>
+            <li><strong>Ribosomes</strong> — where proteins are made</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Plant cell extras</h3>
+          <ul>
+            <li><strong>Cell wall</strong> — made of cellulose; gives structural support</li>
+            <li><strong>Chloroplasts</strong> — contain chlorophyll; site of photosynthesis</li>
+            <li><strong>Large permanent vacuole</strong> — stores cell sap; maintains turgor pressure</li>
+            <li>(Also has nucleus, cytoplasm, cell membrane, mitochondria, ribosomes)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="warn-box">Common mistake: Students often forget that plant cells still have mitochondria. Photosynthesis happens in chloroplasts; respiration happens in mitochondria — both occur in plants.</div>
+      <div class="card">
+        <h3>Specialised cells</h3>
+        <table class="compare-table">
+          <tr><th>Cell</th><th>Special features</th><th>How features help</th></tr>
+          <tr><td><strong>Root hair cell</strong></td><td>Long extension; thin membrane; no chloroplasts</td><td>Large SA for absorbing water &amp; minerals; no light underground so no chloroplasts needed</td></tr>
+          <tr><td><strong>Red blood cell</strong></td><td>Biconcave shape; no nucleus; haemoglobin</td><td>Large SA for O₂ absorption; no nucleus = more room for haemoglobin</td></tr>
+          <tr><td><strong>Sperm cell</strong></td><td>Long tail; many mitochondria; streamlined head</td><td>Tail for swimming; mitochondria provide energy</td></tr>
+          <tr><td><strong>Nerve cell</strong></td><td>Very long; many dendrites</td><td>Transmits electrical signals over long distances quickly</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Diffusion &amp; Osmosis</h3>
+        <p><strong>Diffusion</strong> — movement of particles from high to low concentration (down a concentration gradient). Passive — no energy needed.</p>
+        <div class="key-fact">Rate of diffusion increases with: larger surface area · steeper concentration gradient · higher temperature · shorter distance</div>
+        <p style="margin-top:10px"><strong>Osmosis</strong> — movement of water through a partially permeable membrane from higher to lower water concentration. This is how water enters root hair cells from soil.</p>
+      </div>
+      <div class="card">
+        <h3>Levels of organisation</h3>
+        <div class="flow">
+          <span class="flow-step">Cell</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Tissue</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Organ</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Organ system</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Organism</span>
+        </div>
+      </div>
+      <div class="exam-tip">If asked to explain why a specialised cell is adapted, always match each feature to a specific function — never just list features without explaining what they do.</div>
+    </div>
+
+    <!-- WATER TRANSPORT -->
+    <div class="section" id="bio-transport">
+      <div class="section-header">
+        <span class="section-num">B.02</span>
+        <h2>Water Transport in Plants</h2>
+        <span class="freq-tag freq-high">Appears in every paper</span>
+      </div>
+      <div class="key-fact"><strong>This topic appears in almost every past paper.</strong> Know the pathway, vessel names, and transpiration factors perfectly.</div>
+      <div class="card">
+        <h3>Pathway of water</h3>
+        <div class="flow">
+          <span class="flow-step">Soil</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Root hair (osmosis)</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Xylem vessels</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Leaf cells</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Stomata</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Atmosphere (transpiration)</span>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Xylem vessels</h3>
+          <ul>
+            <li>Dead cells, hollow tubes</li>
+            <li>Lignified (strengthened) walls</li>
+            <li>Carry water and mineral salts upward only</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Phloem vessels</h3>
+          <ul>
+            <li>Living cells</li>
+            <li>Carry dissolved sugars (sucrose)</li>
+            <li>Transport in both directions (translocation)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Mineral salts</h3>
+        <table class="compare-table">
+          <tr><th>Mineral</th><th>Used for</th><th>Deficiency symptom</th></tr>
+          <tr><td><strong>Nitrates</strong></td><td>Making proteins and DNA; growth</td><td>Stunted growth, yellowing of older leaves</td></tr>
+          <tr><td><strong>Magnesium</strong></td><td>Making chlorophyll</td><td>Yellow leaves (chlorosis)</td></tr>
+          <tr><td>Phosphates</td><td>DNA and cell membranes</td><td>Poor root growth, purple leaves</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Transpiration factors</h3>
+        <table class="compare-table">
+          <tr><th>Factor increases</th><th>Effect</th><th>Reason</th></tr>
+          <tr><td>Temperature ↑</td><td>Rate increases</td><td>Water molecules have more kinetic energy; evaporate faster</td></tr>
+          <tr><td>Wind speed ↑</td><td>Rate increases</td><td>Removes water vapour; maintains steep concentration gradient</td></tr>
+          <tr><td>Light intensity ↑</td><td>Rate increases</td><td>Stomata open wider for more CO₂ for photosynthesis</td></tr>
+          <tr><td>Humidity ↑</td><td>Rate decreases</td><td>Less gradient between leaf and air; slower diffusion out</td></tr>
+        </table>
+      </div>
+      <div class="exam-tip">Always explain WHY a factor changes transpiration rate — say what happens to water molecules or the concentration gradient, not just "it increases".</div>
+    </div>
+
+    <!-- PHOTOSYNTHESIS -->
+    <div class="section" id="bio-photosynthesis">
+      <div class="section-header">
+        <span class="section-num">B.03</span>
+        <h2>Photosynthesis</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="equation">carbon dioxide + water → glucose + oxygen&nbsp;&nbsp;(requires light energy, in chloroplasts)</div>
+      <div class="card">
+        <h3>Key facts</h3>
+        <ul>
+          <li>Takes place in <strong>chloroplasts</strong>, which contain the green pigment <strong>chlorophyll</strong></li>
+          <li>CO₂ enters through stomata; water absorbed through roots via xylem</li>
+          <li>Glucose used for: respiration · starch storage · cellulose (cell walls) · proteins (with nitrates)</li>
+          <li>Oxygen released as by-product through stomata</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Limiting factors</h3>
+        <table class="compare-table">
+          <tr><th>Factor</th><th>Effect when increased</th><th>Why</th></tr>
+          <tr><td>Light intensity</td><td>Rate increases (up to a point)</td><td>Light provides energy to drive the reaction</td></tr>
+          <tr><td>CO₂ concentration</td><td>Rate increases (up to a point)</td><td>CO₂ is a raw material</td></tr>
+          <tr><td>Temperature</td><td>Rate increases then falls sharply</td><td>Too hot denatures enzymes</td></tr>
+        </table>
+      </div>
+      <div class="warn-box">Common mistake: Plants respire continuously day and night. During the day, photosynthesis rate exceeds respiration rate, so there is net uptake of CO₂ — but respiration never stops.</div>
+      <div class="exam-tip">Starch test: boil leaf in ethanol to remove chlorophyll → wash in water → add iodine. Blue-black = starch present. Know every step of this method.</div>
+    </div>
+
+    <!-- RESPIRATION -->
+    <div class="section" id="bio-respiration">
+      <div class="section-header">
+        <span class="section-num">B.04</span>
+        <h2>Respiration</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Aerobic respiration</h3>
+        <div class="equation">glucose + oxygen → carbon dioxide + water + energy</div>
+        <ul style="margin-top:10px">
+          <li>Occurs in <strong>mitochondria</strong></li>
+          <li>Happens continuously in all living cells</li>
+          <li>Energy used for: movement · growth · temperature · active transport</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Anaerobic respiration</h3>
+        <table class="compare-table">
+          <tr><th>In animals / humans</th><th>In yeast</th></tr>
+          <tr>
+            <td><div class="equation" style="font-size:12px">glucose → lactic acid + energy</div>Causes muscle fatigue and cramp during intense exercise.</td>
+            <td><div class="equation" style="font-size:12px">glucose → ethanol + CO₂ + energy</div>Used in fermentation — CO₂ makes bread rise; ethanol gives alcohol.</td>
+          </tr>
+        </table>
+        <div class="key-fact">Anaerobic releases far less energy than aerobic. It is a temporary solution when oxygen supply is insufficient.</div>
+      </div>
+      <div class="exam-tip">When comparing aerobic and anaerobic: aerobic needs O₂, anaerobic does not; aerobic produces CO₂ and water, anaerobic (animals) produces lactic acid; aerobic releases more energy.</div>
+    </div>
+
+    <!-- GENETICS -->
+    <div class="section" id="bio-genetics">
+      <div class="section-header">
+        <span class="section-num">B.05</span>
+        <h2>Inheritance &amp; Genetics</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Key vocabulary</h3>
+        <table class="compare-table">
+          <tr><th>Term</th><th>Definition</th></tr>
+          <tr><td><strong>Gene</strong></td><td>A section of DNA that codes for a characteristic</td></tr>
+          <tr><td><strong>Allele</strong></td><td>A version of a gene (e.g. blue or brown eye colour allele)</td></tr>
+          <tr><td><strong>Dominant</strong></td><td>Allele expressed if present (capital letter, e.g. B)</td></tr>
+          <tr><td><strong>Recessive</strong></td><td>Only expressed if two copies present (e.g. b)</td></tr>
+          <tr><td><strong>Genotype</strong></td><td>The alleles an organism has (e.g. Bb)</td></tr>
+          <tr><td><strong>Phenotype</strong></td><td>The physical characteristic shown (e.g. brown eyes)</td></tr>
+          <tr><td><strong>Homozygous</strong></td><td>Both alleles identical (BB or bb)</td></tr>
+          <tr><td><strong>Heterozygous</strong></td><td>Two different alleles (Bb)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Sex determination &amp; Punnett squares</h3>
+        <p>XX = female · XY = male. The father's sperm determines sex (carries X or Y; eggs always carry X).</p>
+        <p style="margin-top:10px"><strong>Example:</strong> Tall (T) dominant over short (t). Cross Tt × Tt:</p>
+        <table class="compare-table" style="margin-top:8px">
+          <tr><th></th><th>T</th><th>t</th></tr>
+          <tr><td><strong>T</strong></td><td>TT (tall)</td><td>Tt (tall)</td></tr>
+          <tr><td><strong>t</strong></td><td>Tt (tall)</td><td>tt (short)</td></tr>
+        </table>
+        <p style="font-size:13px;margin-top:8px">Ratio: 3 tall : 1 short</p>
+      </div>
+      <div class="exam-tip">Always show parent genotypes above and beside the grid, fill in ALL four boxes, then state the ratio of phenotypes — not just genotypes.</div>
+    </div>
+
+    <!-- BODY SYSTEMS -->
+    <div class="section" id="bio-body">
+      <div class="section-header">
+        <span class="section-num">B.06</span>
+        <h2>Human Body Systems</h2>
+        <span class="freq-tag freq-med">Medium-high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Digestive system — enzymes</h3>
+        <table class="compare-table">
+          <tr><th>Enzyme</th><th>Substrate</th><th>Product</th><th>Made in</th></tr>
+          <tr><td>Amylase</td><td>Starch</td><td>Sugars</td><td>Salivary glands, pancreas</td></tr>
+          <tr><td>Protease</td><td>Proteins</td><td>Amino acids</td><td>Stomach, pancreas</td></tr>
+          <tr><td>Lipase</td><td>Fats</td><td>Fatty acids + glycerol</td><td>Pancreas</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Circulatory system</h3>
+        <ul>
+          <li><strong>Arteries</strong> — away from heart; thick muscular walls; high pressure</li>
+          <li><strong>Veins</strong> — toward heart; thinner walls; valves prevent backflow</li>
+          <li><strong>Capillaries</strong> — one cell thick; exchange gases, nutrients and wastes</li>
+          <li>Double circulation: pulmonary (heart–lungs) and systemic (heart–body)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Excretory system</h3>
+        <div class="flow">
+          <span class="flow-step">Liver makes urea</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Kidneys filter blood</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Urine → ureter → bladder → urethra</span>
+        </div>
+      </div>
+      <div class="exam-tip">Know the difference: <strong>ureter</strong> (kidney to bladder) vs <strong>urethra</strong> (bladder to outside). Frequently confused and examiners penalise the error.</div>
+    </div>
+
+    <!-- ECOSYSTEMS -->
+    <div class="section" id="bio-ecosystems">
+      <div class="section-header">
+        <span class="section-num">B.07</span>
+        <h2>Ecosystems &amp; Food Chains</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Food chains &amp; energy transfer</h3>
+        <div class="flow">
+          <span class="flow-step">Producer (plant)</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Primary consumer</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Secondary consumer</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Tertiary consumer</span>
+        </div>
+        <ul style="margin-top:12px">
+          <li>Arrows show direction of <strong>energy flow</strong></li>
+          <li>Energy is lost as heat and movement at each level — only ~10% is transferred</li>
+          <li>This is why food chains rarely exceed 4–5 links</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Decomposers &amp; nutrient cycling</h3>
+        <ul>
+          <li>Bacteria and fungi break down dead organisms</li>
+          <li>Release minerals (including nitrates) back into soil for plants</li>
+          <li>Without decomposers, nutrients would be locked in dead matter</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Human impacts</h3>
+        <ul>
+          <li><strong>Deforestation</strong> — destroys habitats; reduces biodiversity; releases CO₂</li>
+          <li><strong>Pollution / eutrophication</strong> — fertilisers cause algal blooms; deplete oxygen in water</li>
+          <li><strong>Overfishing</strong> — reduces populations faster than they can reproduce</li>
+          <li><strong>Climate change</strong> — shifts habitats; causes extinction</li>
+        </ul>
+      </div>
+      <div class="exam-tip">When asked about removing a species, trace the effect in both directions: what eats it (population falls) and what it eats (population rises).</div>
+    </div>
+
+    <!-- HEALTH -->
+    <div class="section" id="bio-health">
+      <div class="section-header">
+        <span class="section-num">B.08</span>
+        <h2>Health, Disease &amp; Immunity</h2>
+        <span class="freq-tag freq-med">Medium frequency</span>
+      </div>
+      <div class="card">
+        <h3>Pathogens</h3>
+        <table class="compare-table">
+          <tr><th>Type</th><th>Examples</th><th>Treatment</th></tr>
+          <tr><td>Bacteria</td><td>TB, salmonella</td><td>Antibiotics (only work on bacteria)</td></tr>
+          <tr><td>Viruses</td><td>Influenza, HIV, COVID-19</td><td>Antiviral drugs; vaccines for prevention</td></tr>
+          <tr><td>Fungi</td><td>Athlete's foot</td><td>Antifungal creams</td></tr>
+          <tr><td>Parasites</td><td>Malaria (plasmodium)</td><td>Antimalarial drugs</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Immune system</h3>
+        <ul>
+          <li>Phagocytes engulf and destroy pathogens (phagocytosis)</li>
+          <li>Lymphocytes produce <strong>antibodies</strong> — proteins that recognise and neutralise specific pathogens</li>
+          <li>Memory cells remain — faster response if same pathogen attacks again (immunity)</li>
+          <li>Vaccines contain dead/weakened pathogens — trigger antibody production without causing disease</li>
+        </ul>
+      </div>
+      <div class="exam-tip">Antibiotics kill bacteria ONLY — they do not work on viruses. This is a very common exam question.</div>
+    </div>
+
+    <!-- BIO TECHNIQUE -->
+    <div class="section" id="bio-technique">
+      <div class="section-header">
+        <span class="section-num">B.09</span>
+        <h2>Exam Technique — Biology</h2>
+      </div>
+      <div class="summary-band">
+        <h4>Top 10 must-know biology facts</h4>
+        <ul>
+          <li>Water path: soil → root hair (osmosis) → xylem → stomata (transpiration)</li>
+          <li>Photosynthesis: CO₂ + H₂O → glucose + O₂ (light energy, chloroplasts)</li>
+          <li>Aerobic respiration: glucose + O₂ → CO₂ + H₂O (mitochondria)</li>
+          <li>Anaerobic (animals): glucose → lactic acid; (yeast): glucose → ethanol + CO₂</li>
+          <li>Xylem carries water up; phloem carries sugars both ways</li>
+          <li>Nitrates → protein/growth; Magnesium → chlorophyll</li>
+          <li>XX = female; XY = male; gametes are haploid (23 chromosomes)</li>
+          <li>Ureter: kidney to bladder; Urethra: bladder to outside</li>
+          <li>Antibiotics kill bacteria only — not viruses</li>
+          <li>Energy is lost at each trophic level — food chains are short</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Model answer structure for "explain why" questions</h3>
+        <div class="key-fact"><strong>Formula:</strong> [What happens] because [scientific reason]. This means that [consequence].<br><br>Example: "The rate of transpiration increases because at higher temperatures, water molecules have more kinetic energy. This means they evaporate from the leaf surface faster, increasing water loss."</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CHEMISTRY ═══ -->
+<div class="strand-panel" id="panel-chem">
+  <nav class="toc">
+    <a href="#chem-matter">States of Matter</a>
+    <a href="#chem-atoms">Atoms &amp; Elements</a>
+    <a href="#chem-bonding">Bonding</a>
+    <a href="#chem-reactions">Chemical Reactions</a>
+    <a href="#chem-acids">Acids &amp; Bases</a>
+    <a href="#chem-periodic">Periodic Table</a>
+    <a href="#chem-carbon">Carbon Chemistry</a>
+    <a href="#chem-technique">Exam Technique</a>
+  </nav>
+  <div class="container">
+
+    <!-- STATES OF MATTER -->
+    <div class="section" id="chem-matter">
+      <div class="section-header">
+        <span class="section-num">C.01</span>
+        <h2>States of Matter</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>The three states</h3>
+        <table class="compare-table">
+          <tr><th>State</th><th>Particle arrangement</th><th>Movement</th><th>Shape / Volume</th></tr>
+          <tr><td><strong>Solid</strong></td><td>Close together, regular lattice</td><td>Vibrate in fixed positions</td><td>Fixed shape, fixed volume</td></tr>
+          <tr><td><strong>Liquid</strong></td><td>Close together, irregular</td><td>Flow past each other</td><td>No fixed shape, fixed volume</td></tr>
+          <tr><td><strong>Gas</strong></td><td>Far apart, random</td><td>Move rapidly in all directions</td><td>No fixed shape or volume; fills container</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Changes of state</h3>
+        <div class="flow">
+          <span class="flow-step">Solid</span><span class="flow-arrow">⇌</span>
+          <span class="flow-step">Liquid</span><span class="flow-arrow">⇌</span>
+          <span class="flow-step">Gas</span>
+        </div>
+        <table class="compare-table" style="margin-top:10px">
+          <tr><th>Change of state</th><th>Direction</th><th>Energy change</th></tr>
+          <tr><td>Melting</td><td>Solid → Liquid</td><td>Energy absorbed</td></tr>
+          <tr><td>Freezing</td><td>Liquid → Solid</td><td>Energy released</td></tr>
+          <tr><td>Evaporation / Boiling</td><td>Liquid → Gas</td><td>Energy absorbed</td></tr>
+          <tr><td>Condensation</td><td>Gas → Liquid</td><td>Energy released</td></tr>
+          <tr><td>Sublimation</td><td>Solid → Gas (directly)</td><td>Energy absorbed</td></tr>
+        </table>
+        <div class="key-fact">During a change of state, temperature does NOT change — energy is used to break/form forces between particles, not to speed them up. The substance is a MIXTURE of states at its melting/boiling point.</div>
+      </div>
+      <div class="card">
+        <h3>Diffusion in gases and liquids</h3>
+        <ul>
+          <li>Diffusion is faster in gases than liquids (particles move more freely)</li>
+          <li>Faster at higher temperatures (more kinetic energy)</li>
+          <li>Faster for lighter particles (smaller relative molecular mass)</li>
+        </ul>
+      </div>
+      <div class="exam-tip">When drawing particle diagrams, make sure solids have particles touching in neat rows, liquids have particles touching but disordered, and gases have particles far apart with lots of space between them.</div>
+    </div>
+
+    <!-- ATOMS & ELEMENTS -->
+    <div class="section" id="chem-atoms">
+      <div class="section-header">
+        <span class="section-num">C.02</span>
+        <h2>Atoms, Elements &amp; Compounds</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Atomic structure</h3>
+        <ul>
+          <li><strong>Nucleus</strong> — contains protons (+) and neutrons (no charge)</li>
+          <li><strong>Electrons</strong> — orbit the nucleus in shells; negatively charged</li>
+          <li>Atomic number = number of protons (and electrons in a neutral atom)</li>
+          <li>Mass number = protons + neutrons</li>
+          <li><strong>Isotopes</strong> — atoms of the same element with different numbers of neutrons</li>
+        </ul>
+        <div class="key-fact">Electron shell filling order: first shell holds max 2 electrons; second and third shells hold max 8 each. Example: sodium (11 protons) = 2, 8, 1</div>
+      </div>
+      <div class="card">
+        <h3>Elements, compounds, mixtures</h3>
+        <table class="compare-table">
+          <tr><th>Type</th><th>Definition</th><th>Example</th></tr>
+          <tr><td><strong>Element</strong></td><td>One type of atom only; cannot be split into simpler substances by chemical means</td><td>Iron (Fe), Oxygen (O₂)</td></tr>
+          <tr><td><strong>Compound</strong></td><td>Two or more elements chemically bonded in fixed ratio</td><td>Water (H₂O), Salt (NaCl)</td></tr>
+          <tr><td><strong>Mixture</strong></td><td>Two or more substances not chemically bonded; can be separated by physical methods</td><td>Salt water, air</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Separation techniques</h3>
+        <table class="compare-table">
+          <tr><th>Technique</th><th>Used to separate</th><th>Principle</th></tr>
+          <tr><td>Filtration</td><td>Insoluble solid from liquid</td><td>Solid is too large to pass through filter paper</td></tr>
+          <tr><td>Evaporation</td><td>Dissolved solid from solution</td><td>Liquid evaporates; solid remains</td></tr>
+          <tr><td>Distillation</td><td>Solvent from solution; liquids with different boiling points</td><td>Liquid boils → vapour condenses separately</td></tr>
+          <tr><td>Chromatography</td><td>Mixtures of coloured dyes / substances</td><td>Different substances travel different distances up paper</td></tr>
+          <tr><td>Crystallisation</td><td>Dissolved solid from solution</td><td>Slow evaporation → pure crystals form</td></tr>
+        </table>
+      </div>
+      <div class="exam-tip">Chromatography Rf value = distance moved by spot ÷ distance moved by solvent. If two substances have the same Rf value in the same solvent, they are the same substance.</div>
+    </div>
+
+    <!-- BONDING -->
+    <div class="section" id="chem-bonding">
+      <div class="section-header">
+        <span class="section-num">C.03</span>
+        <h2>Bonding &amp; Structure</h2>
+        <span class="freq-tag freq-med">Medium-high frequency</span>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Ionic bonding</h3>
+          <ul>
+            <li>Transfer of electrons from metal to non-metal</li>
+            <li>Metal loses electrons → becomes positive ion (cation)</li>
+            <li>Non-metal gains electrons → becomes negative ion (anion)</li>
+            <li>Held together by electrostatic attraction</li>
+            <li>High melting points; conduct electricity when dissolved or molten</li>
+            <li>Example: NaCl (sodium chloride)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Covalent bonding</h3>
+          <ul>
+            <li>Sharing of electrons between non-metals</li>
+            <li>Each shared pair = one covalent bond</li>
+            <li>Simple molecules: low melting points; do not conduct electricity</li>
+            <li>Giant covalent structures (e.g. diamond, silicon dioxide): very high melting points</li>
+            <li>Example: H₂O, CO₂, CH₄</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Metallic bonding</h3>
+        <ul>
+          <li>Positive metal ions in a lattice surrounded by a "sea" of delocalised electrons</li>
+          <li>These free electrons allow conduction of electricity and heat</li>
+          <li>Strong bonding → high melting points</li>
+          <li>Layers can slide → metals are malleable (can be shaped)</li>
+        </ul>
+      </div>
+      <div class="warn-box">Common mistake: Ionic compounds do NOT conduct electricity as solids — ions are locked in the lattice. They only conduct when dissolved in water or melted.</div>
+    </div>
+
+    <!-- CHEMICAL REACTIONS -->
+    <div class="section" id="chem-reactions">
+      <div class="section-header">
+        <span class="section-num">C.04</span>
+        <h2>Chemical Reactions</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Signs of a chemical reaction</h3>
+        <ul>
+          <li>Colour change</li>
+          <li>Gas produced (bubbles / effervescence)</li>
+          <li>Precipitate formed (cloudy solid appears in solution)</li>
+          <li>Temperature change (exothermic = gets hot; endothermic = gets cold)</li>
+          <li>New substance formed that is difficult to reverse</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Types of chemical reactions</h3>
+        <table class="compare-table">
+          <tr><th>Reaction type</th><th>Description</th><th>Example</th></tr>
+          <tr><td><strong>Combustion</strong></td><td>Substance reacts with oxygen, releasing energy (heat/light)</td><td>methane + oxygen → CO₂ + H₂O</td></tr>
+          <tr><td><strong>Oxidation</strong></td><td>Gain of oxygen (or loss of electrons)</td><td>Iron rusting; burning</td></tr>
+          <tr><td><strong>Reduction</strong></td><td>Loss of oxygen (or gain of electrons)</td><td>Metal extracted from ore</td></tr>
+          <tr><td><strong>Thermal decomposition</strong></td><td>One substance breaks down when heated into two or more</td><td>CaCO₃ → CaO + CO₂</td></tr>
+          <tr><td><strong>Displacement</strong></td><td>More reactive metal pushes less reactive metal out of compound</td><td>Zn + CuSO₄ → ZnSO₄ + Cu</td></tr>
+          <tr><td><strong>Precipitation</strong></td><td>Two solutions mix to form an insoluble solid</td><td>BaCl₂ + Na₂SO₄ → BaSO₄↓ + 2NaCl</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Rates of reaction — factors</h3>
+        <table class="compare-table">
+          <tr><th>Factor increases</th><th>Effect on rate</th><th>Reason</th></tr>
+          <tr><td>Temperature ↑</td><td>Faster</td><td>Particles have more energy; more frequent, more energetic collisions</td></tr>
+          <tr><td>Concentration ↑</td><td>Faster</td><td>More particles per volume; more frequent collisions</td></tr>
+          <tr><td>Surface area ↑</td><td>Faster</td><td>More exposed particles available to react</td></tr>
+          <tr><td>Catalyst added</td><td>Faster</td><td>Provides an alternative pathway with lower activation energy</td></tr>
+        </table>
+        <div class="key-fact">All rate explanations must use <strong>collision theory</strong> — rate increases when there are more frequent and/or more energetic collisions between particles.</div>
+      </div>
+      <div class="card">
+        <h3>Balancing equations</h3>
+        <p>Atoms are conserved in chemical reactions — the total number of each type of atom must be the same on both sides of the equation.</p>
+        <div class="equation">H₂ + Cl₂ → 2HCl&nbsp;&nbsp;&nbsp;(balanced: 2H and 2Cl on each side)</div>
+        <div class="equation">2Mg + O₂ → 2MgO&nbsp;&nbsp;&nbsp;(balanced: 2Mg and 2O each side)</div>
+        <p style="font-size:13px;margin-top:8px;color:var(--muted)">Only change coefficients (numbers in front) — never change the formula of a substance.</p>
+      </div>
+      <div class="exam-tip">When explaining a rate of reaction result, always state: (1) what happens to the number or energy of collisions, (2) why this changes the rate. Simply saying "more collisions" without explaining why earns no mark.</div>
+    </div>
+
+    <!-- ACIDS & BASES -->
+    <div class="section" id="chem-acids">
+      <div class="section-header">
+        <span class="section-num">C.05</span>
+        <h2>Acids, Bases &amp; Salts</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>pH scale and indicators</h3>
+        <ul>
+          <li>pH 1–6 = acidic; pH 7 = neutral; pH 8–14 = alkaline</li>
+          <li>Acids produce H⁺ ions in solution; bases produce OH⁻ ions</li>
+          <li>Universal indicator: red/orange = acid; green = neutral; blue/purple = alkali</li>
+          <li>Litmus: red in acid, blue in alkali</li>
+        </ul>
+        <div class="key-fact">Each step on the pH scale represents a 10× change in acidity (it is a logarithmic scale). pH 3 is 10× more acidic than pH 4.</div>
+      </div>
+      <div class="card">
+        <h3>Neutralisation reactions</h3>
+        <div class="equation">acid + base → salt + water</div>
+        <div class="equation">acid + carbonate → salt + water + carbon dioxide</div>
+        <div class="equation">acid + metal → salt + hydrogen gas</div>
+        <table class="compare-table" style="margin-top:12px">
+          <tr><th>Acid</th><th>Salt formed</th><th>Example</th></tr>
+          <tr><td>Hydrochloric acid (HCl)</td><td>Chloride</td><td>NaCl (sodium chloride)</td></tr>
+          <tr><td>Sulfuric acid (H₂SO₄)</td><td>Sulfate</td><td>CuSO₄ (copper sulfate)</td></tr>
+          <tr><td>Nitric acid (HNO₃)</td><td>Nitrate</td><td>Ca(NO₃)₂ (calcium nitrate)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Tests for gases</h3>
+        <table class="compare-table">
+          <tr><th>Gas</th><th>Test</th><th>Positive result</th></tr>
+          <tr><td>Hydrogen (H₂)</td><td>Burning splint held to opening</td><td>"Squeaky pop"</td></tr>
+          <tr><td>Oxygen (O₂)</td><td>Glowing splint inserted</td><td>Splint relights</td></tr>
+          <tr><td>Carbon dioxide (CO₂)</td><td>Bubble through limewater</td><td>Limewater turns milky/cloudy</td></tr>
+          <tr><td>Chlorine (Cl₂)</td><td>Damp litmus paper</td><td>Litmus bleached white</td></tr>
+          <tr><td>Ammonia (NH₃)</td><td>Damp red litmus paper</td><td>Turns blue</td></tr>
+        </table>
+      </div>
+      <div class="exam-tip">Know all five gas tests — they appear in almost every paper. The limewater test for CO₂ and the squeaky pop test for H₂ are the most common.</div>
+    </div>
+
+    <!-- PERIODIC TABLE -->
+    <div class="section" id="chem-periodic">
+      <div class="section-header">
+        <span class="section-num">C.06</span>
+        <h2>The Periodic Table</h2>
+        <span class="freq-tag freq-med">Medium-high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Key features and trends</h3>
+        <ul>
+          <li>Elements arranged by increasing <strong>atomic number</strong></li>
+          <li>Vertical columns = <strong>groups</strong> — elements have similar chemical properties (same number of outer electrons)</li>
+          <li>Horizontal rows = <strong>periods</strong> — elements have the same number of electron shells</li>
+          <li>Metals on the left; non-metals on the right; metalloids on the boundary</li>
+        </ul>
+        <div class="key-fact">The group number = number of outer electrons (for groups 1–7). This determines chemical properties and how an element bonds.</div>
+      </div>
+      <div class="card">
+        <h3>Key groups</h3>
+        <table class="compare-table">
+          <tr><th>Group</th><th>Name</th><th>Properties</th></tr>
+          <tr><td><strong>Group 1</strong></td><td>Alkali metals</td><td>Soft; react vigorously with water → hydrogen gas + metal hydroxide; reactivity increases down the group</td></tr>
+          <tr><td><strong>Group 7</strong></td><td>Halogens</td><td>Diatomic molecules; coloured gases/liquids; reactivity decreases down the group; form -1 ions</td></tr>
+          <tr><td><strong>Group 0 (8)</strong></td><td>Noble gases</td><td>Full outer shell → chemically unreactive (inert); used in light bulbs, balloons</td></tr>
+          <tr><td><strong>Transition metals</strong></td><td>(block in middle)</td><td>Hard, dense, high melting points; form coloured compounds; good catalysts</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Reactivity series (metals)</h3>
+        <div class="flow">
+          <span class="flow-step">K</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Na</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Ca</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Mg</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Al</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Zn</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Fe</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Cu</span>
+          <span class="flow-arrow">↓ decreasing reactivity</span>
+        </div>
+        <p style="font-size:13px;margin-top:8px;color:var(--muted)">A more reactive metal will displace a less reactive metal from its compound. Gold and platinum are below copper — very unreactive.</p>
+      </div>
+    </div>
+
+    <!-- CARBON CHEMISTRY -->
+    <div class="section" id="chem-carbon">
+      <div class="section-header">
+        <span class="section-num">C.07</span>
+        <h2>Carbon Chemistry</h2>
+        <span class="freq-tag freq-med">Medium frequency</span>
+      </div>
+      <div class="card">
+        <h3>Fuels and combustion</h3>
+        <ul>
+          <li>Fossil fuels (coal, oil, natural gas) are hydrocarbons</li>
+          <li><strong>Complete combustion:</strong> hydrocarbon + oxygen → CO₂ + H₂O (clean blue flame)</li>
+          <li><strong>Incomplete combustion:</strong> insufficient oxygen → CO (toxic) + soot (carbon) + H₂O (yellow sooty flame)</li>
+          <li>Carbon monoxide is dangerous — colourless, odourless, binds to haemoglobin, prevents O₂ transport</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Carbon cycle</h3>
+        <ul>
+          <li>CO₂ removed from atmosphere by photosynthesis</li>
+          <li>CO₂ returned by: respiration · combustion · decomposition</li>
+          <li>Human activities (burning fossil fuels, deforestation) increase atmospheric CO₂</li>
+          <li>Increased CO₂ = enhanced greenhouse effect → global warming</li>
+        </ul>
+      </div>
+      <div class="exam-tip">When explaining the greenhouse effect: CO₂ and other greenhouse gases absorb infrared radiation emitted from Earth's surface and re-emit it back — reducing heat lost to space, warming the planet.</div>
+    </div>
+
+    <!-- CHEM TECHNIQUE -->
+    <div class="section" id="chem-technique">
+      <div class="section-header">
+        <span class="section-num">C.08</span>
+        <h2>Exam Technique — Chemistry</h2>
+      </div>
+      <div class="summary-band">
+        <h4>Top 10 must-know chemistry facts</h4>
+        <ul>
+          <li>Solid particles vibrate in fixed positions; gas particles move rapidly and randomly</li>
+          <li>Atomic number = number of protons; mass number = protons + neutrons</li>
+          <li>Shell order: 2, 8, 8 — group number = outer electrons</li>
+          <li>Ionic bonding = electron transfer (metal to non-metal)</li>
+          <li>Covalent bonding = electron sharing (non-metal to non-metal)</li>
+          <li>Rate increases: more temperature, concentration, surface area, or catalyst</li>
+          <li>Acid + carbonate → salt + water + CO₂; acid + metal → salt + H₂</li>
+          <li>H₂ test: squeaky pop; O₂: relights splint; CO₂: cloudy limewater</li>
+          <li>Group 1 reactivity increases down; Group 7 reactivity decreases down</li>
+          <li>Incomplete combustion produces toxic CO and sooty carbon</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Balancing equations checklist</h3>
+        <div class="key-fact">Step 1: Write word equation → Step 2: Write unbalanced symbol equation → Step 3: Count atoms on each side → Step 4: Add coefficients to balance → Step 5: Recount to check. Never change a formula to balance — only coefficients.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PHYSICS ═══ -->
+<div class="strand-panel" id="panel-phys">
+  <nav class="toc">
+    <a href="#phys-forces">Forces &amp; Motion</a>
+    <a href="#phys-energy">Energy</a>
+    <a href="#phys-waves">Waves &amp; Sound</a>
+    <a href="#phys-light">Light</a>
+    <a href="#phys-electricity">Electricity</a>
+    <a href="#phys-magnetism">Magnetism</a>
+    <a href="#phys-technique">Exam Technique</a>
+  </nav>
+  <div class="container">
+
+    <!-- FORCES & MOTION -->
+    <div class="section" id="phys-forces">
+      <div class="section-header">
+        <span class="section-num">P.01</span>
+        <h2>Forces &amp; Motion</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Key equations — forces and motion</h3>
+        <div class="equation">Speed (m/s) = Distance (m) ÷ Time (s)</div>
+        <div class="equation">Force (N) = Mass (kg) × Acceleration (m/s²)&nbsp;&nbsp;[F = ma]</div>
+        <div class="equation">Weight (N) = Mass (kg) × gravitational field strength (N/kg)&nbsp;&nbsp;[W = mg]&nbsp;&nbsp;(g = 10 N/kg on Earth)</div>
+        <div class="equation">Pressure (Pa) = Force (N) ÷ Area (m²)&nbsp;&nbsp;[P = F/A]</div>
+        <div class="equation">Moment (N·m) = Force (N) × perpendicular distance (m)</div>
+      </div>
+      <div class="card">
+        <h3>Forces and Newton's Laws</h3>
+        <ul>
+          <li><strong>Newton's 1st law:</strong> An object stays at rest or moves at constant velocity unless acted on by a resultant (unbalanced) force</li>
+          <li><strong>Newton's 2nd law:</strong> A resultant force causes acceleration: F = ma</li>
+          <li><strong>Newton's 3rd law:</strong> Every action has an equal and opposite reaction force on a different object</li>
+        </ul>
+        <div class="key-fact">Balanced forces (resultant = 0) → object stays still OR moves at constant speed. Unbalanced forces → acceleration (change in speed or direction).</div>
+      </div>
+      <div class="card">
+        <h3>Friction, drag and terminal velocity</h3>
+        <ul>
+          <li>Friction and drag oppose motion</li>
+          <li>Terminal velocity: when drag = driving force → no resultant force → constant speed</li>
+          <li>A skydiver reaches terminal velocity when air resistance equals weight</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Pressure in fluids</h3>
+        <ul>
+          <li>Pressure in a liquid increases with depth</li>
+          <li>Acts in all directions at a given depth</li>
+          <li>Atmospheric pressure decreases with altitude (less air above)</li>
+          <li>Floating: upthrust (buoyancy force) = weight of fluid displaced</li>
+        </ul>
+      </div>
+      <div class="exam-tip">When using F = ma, always check units: mass in kg, acceleration in m/s², force in N. If given mass in grams, convert to kg first (/1000).</div>
+    </div>
+
+    <!-- ENERGY -->
+    <div class="section" id="phys-energy">
+      <div class="section-header">
+        <span class="section-num">P.02</span>
+        <h2>Energy</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Energy stores and transfers</h3>
+        <table class="compare-table">
+          <tr><th>Energy store</th><th>Example</th></tr>
+          <tr><td>Kinetic (movement)</td><td>Moving car, spinning wheel</td></tr>
+          <tr><td>Gravitational potential</td><td>Object held above ground</td></tr>
+          <tr><td>Elastic potential</td><td>Stretched spring, compressed gas</td></tr>
+          <tr><td>Chemical</td><td>Food, fuel, batteries</td></tr>
+          <tr><td>Thermal (heat)</td><td>Hot object</td></tr>
+          <tr><td>Nuclear</td><td>Radioactive material</td></tr>
+          <tr><td>Electrical</td><td>Moving charges (current)</td></tr>
+          <tr><td>Light (electromagnetic)</td><td>Photons, radiation</td></tr>
+          <tr><td>Sound</td><td>Vibrating particles</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Key energy equations</h3>
+        <div class="equation">KE (J) = ½ × mass (kg) × speed² (m/s)²</div>
+        <div class="equation">GPE (J) = mass (kg) × g (N/kg) × height (m)&nbsp;&nbsp;[g = 10]</div>
+        <div class="equation">Work done (J) = Force (N) × distance (m)&nbsp;&nbsp;[in direction of force]</div>
+        <div class="equation">Power (W) = Energy transferred (J) ÷ Time (s)</div>
+        <div class="equation">Efficiency = useful energy output ÷ total energy input&nbsp;&nbsp;(× 100 for %)</div>
+      </div>
+      <div class="card">
+        <h3>Conservation of energy</h3>
+        <p>Energy cannot be created or destroyed — only transferred from one store to another. Total energy in a closed system is always constant.</p>
+        <div class="key-fact">Wasted energy is usually transferred to the thermal store (heat) due to friction. Efficiency can never be 100% because some energy is always wasted as heat.</div>
+      </div>
+      <div class="card">
+        <h3>Heat transfer</h3>
+        <table class="compare-table">
+          <tr><th>Method</th><th>How it works</th><th>In what media</th></tr>
+          <tr><td><strong>Conduction</strong></td><td>Particle vibrations pass energy along; free electrons in metals</td><td>Solids (mainly metals)</td></tr>
+          <tr><td><strong>Convection</strong></td><td>Warm fluid expands → less dense → rises; cool fluid sinks → convection current</td><td>Liquids and gases</td></tr>
+          <tr><td><strong>Radiation</strong></td><td>Infrared electromagnetic waves; no particles needed</td><td>Any medium, including vacuum</td></tr>
+        </table>
+        <div class="warn-box">Common mistake: Convection does NOT occur in solids — particles cannot flow. Conduction is the only mechanism in solids.</div>
+      </div>
+      <div class="exam-tip">In efficiency calculations, always show your working: identify useful output energy, total input, then divide. Express as a decimal or percentage as asked — check which one is required.</div>
+    </div>
+
+    <!-- WAVES & SOUND -->
+    <div class="section" id="phys-waves">
+      <div class="section-header">
+        <span class="section-num">P.03</span>
+        <h2>Waves &amp; Sound</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Wave properties</h3>
+        <div class="equation">Wave speed (m/s) = frequency (Hz) × wavelength (m)&nbsp;&nbsp;[v = fλ]</div>
+        <ul style="margin-top:10px">
+          <li><strong>Amplitude</strong> — maximum displacement from equilibrium (height of wave); determines loudness/brightness</li>
+          <li><strong>Wavelength (λ)</strong> — distance between two identical points on adjacent waves (e.g. crest to crest)</li>
+          <li><strong>Frequency (f)</strong> — number of waves per second; unit: Hertz (Hz)</li>
+          <li><strong>Period (T)</strong> — time for one complete wave = 1/f</li>
+        </ul>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Transverse waves</h3>
+          <ul>
+            <li>Oscillation is perpendicular to direction of energy transfer</li>
+            <li>Examples: light, water waves, all EM waves</li>
+            <li>Can travel through a vacuum</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Longitudinal waves</h3>
+          <ul>
+            <li>Oscillation is parallel to direction of energy transfer</li>
+            <li>Has compressions and rarefactions</li>
+            <li>Examples: sound waves</li>
+            <li>Cannot travel through a vacuum</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Sound</h3>
+        <ul>
+          <li>Sound is a longitudinal wave produced by vibrations</li>
+          <li>Travels fastest in solids, slower in liquids, slowest in gases (particles closer together)</li>
+          <li>Cannot travel through a vacuum (no particles to vibrate)</li>
+          <li>Speed of sound in air ≈ 340 m/s; speed of light = 3 × 10⁸ m/s</li>
+          <li><strong>Pitch</strong> = frequency (high frequency = high pitch)</li>
+          <li><strong>Loudness</strong> = amplitude (larger amplitude = louder)</li>
+          <li>Human hearing range: 20 Hz – 20,000 Hz; ultrasound &gt; 20,000 Hz</li>
+        </ul>
+      </div>
+      <div class="exam-tip">Don't confuse amplitude with frequency. Amplitude affects loudness (volume); frequency affects pitch. These are the two most common mix-ups in wave questions.</div>
+    </div>
+
+    <!-- LIGHT -->
+    <div class="section" id="phys-light">
+      <div class="section-header">
+        <span class="section-num">P.04</span>
+        <h2>Light &amp; the Electromagnetic Spectrum</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Reflection and refraction</h3>
+        <ul>
+          <li><strong>Reflection</strong> — angle of incidence = angle of reflection (both measured from the normal)</li>
+          <li><strong>Refraction</strong> — light bends when it changes speed at a boundary between media</li>
+          <li>Light speeds up going from glass/water to air → bends away from normal</li>
+          <li>Light slows down going from air to glass/water → bends toward normal</li>
+        </ul>
+        <div class="key-fact">The normal is an imaginary line perpendicular to the surface at the point of incidence. All angles are measured from the normal, not the surface.</div>
+      </div>
+      <div class="card">
+        <h3>The electromagnetic spectrum</h3>
+        <div class="flow" style="flex-direction:column;align-items:flex-start">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span class="flow-step">Radio</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Microwave</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Infrared</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Visible</span><span class="flow-arrow">→</span>
+            <span class="flow-step">UV</span><span class="flow-arrow">→</span>
+            <span class="flow-step">X-ray</span><span class="flow-arrow">→</span>
+            <span class="flow-step">Gamma</span>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-top:6px">← increasing wavelength&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increasing frequency and energy →</p>
+        </div>
+        <table class="compare-table" style="margin-top:12px">
+          <tr><th>Wave</th><th>Uses</th><th>Dangers</th></tr>
+          <tr><td>Radio waves</td><td>Broadcasting, communication</td><td>None known at everyday levels</td></tr>
+          <tr><td>Microwaves</td><td>Satellite communication, cooking</td><td>Internal tissue heating</td></tr>
+          <tr><td>Infrared</td><td>Remote controls, thermal imaging, heating</td><td>Skin burns</td></tr>
+          <tr><td>Visible light</td><td>Sight, photography</td><td>Eye damage (intense sources)</td></tr>
+          <tr><td>Ultraviolet</td><td>Sterilisation, detecting forged notes</td><td>Skin cancer, eye damage</td></tr>
+          <tr><td>X-rays</td><td>Medical imaging, security scanners</td><td>Ionising radiation → cancer</td></tr>
+          <tr><td>Gamma rays</td><td>Killing cancer cells, sterilising food</td><td>Highly ionising → cancer</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Lenses</h3>
+        <ul>
+          <li><strong>Convex (converging) lens</strong> — brings parallel rays to a focus point; used in magnifying glasses, cameras, eyes</li>
+          <li><strong>Concave (diverging) lens</strong> — spreads parallel rays apart; used to correct short-sightedness</li>
+          <li>The eye: lens focuses light onto the retina; cornea provides most of the focusing power</li>
+        </ul>
+      </div>
+      <div class="exam-tip">Know all seven parts of the EM spectrum in order from radio to gamma. Remember: all EM waves travel at the same speed in a vacuum (3 × 10⁸ m/s) and are transverse waves.</div>
+    </div>
+
+    <!-- ELECTRICITY -->
+    <div class="section" id="phys-electricity">
+      <div class="section-header">
+        <span class="section-num">P.05</span>
+        <h2>Electricity</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Key equations</h3>
+        <div class="equation">Voltage / p.d. (V) = Current (A) × Resistance (Ω)&nbsp;&nbsp;[V = IR / Ohm's Law]</div>
+        <div class="equation">Power (W) = Voltage (V) × Current (A)&nbsp;&nbsp;[P = IV]</div>
+        <div class="equation">Energy transferred (J) = Power (W) × Time (s)&nbsp;&nbsp;[E = Pt]</div>
+        <div class="equation">Charge (C) = Current (A) × Time (s)&nbsp;&nbsp;[Q = It]</div>
+      </div>
+      <div class="card">
+        <h3>Series vs parallel circuits</h3>
+        <table class="compare-table">
+          <tr><th>Feature</th><th>Series circuit</th><th>Parallel circuit</th></tr>
+          <tr><td>Current</td><td>Same throughout circuit</td><td>Splits at each branch; total = sum of branches</td></tr>
+          <tr><td>Voltage (p.d.)</td><td>Shared across components; adds up to supply voltage</td><td>Same across each branch (equal to supply)</td></tr>
+          <tr><td>Resistance</td><td>Total = sum of individual resistances</td><td>Total resistance is less than smallest single resistor</td></tr>
+          <tr><td>Removing a component</td><td>Breaks whole circuit</td><td>Other branches continue working</td></tr>
+          <tr><td>Use</td><td>Simple circuits; fairy lights</td><td>Household wiring; allows independent switching</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Static electricity</h3>
+        <ul>
+          <li>Caused by transfer of electrons (not protons) between objects</li>
+          <li>Object gaining electrons becomes negatively charged; losing electrons = positively charged</li>
+          <li>Like charges repel; unlike charges attract</li>
+          <li>Risks: sparks from static can ignite fuels; used in: photocopiers, inkjet printers, paint spraying</li>
+        </ul>
+      </div>
+      <div class="warn-box">Common mistake: Current is not used up in a circuit — the same current flows through all components in a series circuit. What is "used" is the electrical energy (which is transferred to light, heat, etc.).</div>
+      <div class="exam-tip">For circuit calculations: always identify whether the circuit is series or parallel first. In series: voltages add; in parallel: currents add. Then apply V = IR systematically.</div>
+    </div>
+
+    <!-- MAGNETISM -->
+    <div class="section" id="phys-magnetism">
+      <div class="section-header">
+        <span class="section-num">P.06</span>
+        <h2>Magnetism &amp; Electromagnetism</h2>
+        <span class="freq-tag freq-med">Medium frequency</span>
+      </div>
+      <div class="card">
+        <h3>Magnets and magnetic fields</h3>
+        <ul>
+          <li>Like poles repel; unlike poles attract</li>
+          <li>Magnetic field lines go from North to South outside the magnet</li>
+          <li>Denser field lines = stronger field</li>
+          <li>Magnetic materials: iron, steel, nickel, cobalt</li>
+          <li>Permanent magnets retain magnetism; induced magnets only magnetic while near another magnet</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Electromagnetism</h3>
+        <ul>
+          <li>A current-carrying wire creates a magnetic field around it</li>
+          <li>Wrapping wire into a coil (solenoid) creates a stronger field → electromagnet</li>
+          <li>Strength increases with: more turns of wire · greater current · iron core instead of air</li>
+          <li><strong>Uses:</strong> electric bells, relays, speakers, MRI machines, electric motors</li>
+          <li><strong>Electromagnetic induction:</strong> moving a magnet in or near a coil induces a voltage — the basis of generators</li>
+        </ul>
+        <div class="key-fact">More relative motion between the magnet and coil = greater induced voltage. Changing the direction of motion reverses the induced current direction.</div>
+      </div>
+    </div>
+
+    <!-- PHYS TECHNIQUE -->
+    <div class="section" id="phys-technique">
+      <div class="section-header">
+        <span class="section-num">P.07</span>
+        <h2>Exam Technique — Physics</h2>
+      </div>
+      <div class="summary-band">
+        <h4>Top 10 must-know physics facts</h4>
+        <ul>
+          <li>Speed = distance ÷ time; F = ma; W = mg (g = 10 N/kg on Earth)</li>
+          <li>Conservation of energy: energy cannot be created or destroyed</li>
+          <li>Conduction (solids); convection (liquids/gases); radiation (any/vacuum)</li>
+          <li>v = fλ; amplitude = loudness; frequency = pitch</li>
+          <li>Sound is longitudinal; light and EM waves are transverse</li>
+          <li>EM spectrum: radio → microwave → infrared → visible → UV → X-ray → gamma</li>
+          <li>All EM waves travel at 3 × 10⁸ m/s in vacuum</li>
+          <li>V = IR; current same in series; voltage same across branches in parallel</li>
+          <li>Like charges/poles repel; unlike attract</li>
+          <li>Efficiency = useful output ÷ total input (always &lt;1 due to heat loss)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Calculation method</h3>
+        <div class="key-fact"><strong>Always:</strong> Write the formula → substitute values with units → rearrange if needed → calculate → write answer with correct units. Showing working earns marks even if the final answer is wrong.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ EARTH & SPACE ═══ -->
+<div class="strand-panel" id="panel-earth">
+  <nav class="toc">
+    <a href="#earth-structure">Earth's Structure</a>
+    <a href="#earth-rocks">Rock Cycle</a>
+    <a href="#earth-resources">Earth Resources</a>
+    <a href="#earth-atmosphere">Atmosphere</a>
+    <a href="#earth-solar">Solar System</a>
+    <a href="#earth-universe">Universe</a>
+    <a href="#earth-technique">Exam Technique</a>
+  </nav>
+  <div class="container">
+
+    <!-- EARTH'S STRUCTURE -->
+    <div class="section" id="earth-structure">
+      <div class="section-header">
+        <span class="section-num">E.01</span>
+        <h2>Structure of the Earth</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Layers of the Earth</h3>
+        <table class="compare-table">
+          <tr><th>Layer</th><th>Description</th><th>State</th></tr>
+          <tr><td><strong>Inner core</strong></td><td>Solid iron and nickel; very hot (~5000°C); extreme pressure keeps it solid</td><td>Solid</td></tr>
+          <tr><td><strong>Outer core</strong></td><td>Liquid iron and nickel; generates Earth's magnetic field</td><td>Liquid</td></tr>
+          <tr><td><strong>Mantle</strong></td><td>Semi-molten rock (silicate); convection currents move tectonic plates</td><td>Semi-molten (viscous)</td></tr>
+          <tr><td><strong>Crust</strong></td><td>Thin, solid rock layer; continental crust (thicker, less dense granite) and oceanic crust (thinner, denser basalt)</td><td>Solid</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Tectonic plates</h3>
+        <ul>
+          <li>The crust is broken into large pieces called tectonic plates</li>
+          <li>Plates float on the mantle and move due to <strong>convection currents</strong> in the mantle</li>
+          <li>Convection currents are driven by heat from radioactive decay in the Earth's core</li>
+        </ul>
+        <div class="key-fact">Convection in the mantle: hot material rises → spreads → cools → sinks → creates a circular current that drags plates across Earth's surface.</div>
+      </div>
+      <div class="card">
+        <h3>Plate boundaries and geological events</h3>
+        <table class="compare-table">
+          <tr><th>Boundary type</th><th>What happens</th><th>Examples</th></tr>
+          <tr><td><strong>Convergent (colliding)</strong></td><td>Plates push together; one may subduct under other; forms mountains or ocean trenches; earthquakes and volcanoes</td><td>Himalayas (India–Asia)</td></tr>
+          <tr><td><strong>Divergent (separating)</strong></td><td>Plates move apart; magma rises to fill gap; forms new ocean floor and mid-ocean ridges; volcanoes</td><td>Mid-Atlantic Ridge</td></tr>
+          <tr><td><strong>Conservative (sliding)</strong></td><td>Plates slide past each other; no magma; major earthquakes</td><td>San Andreas Fault, California</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Earthquakes and volcanoes</h3>
+        <ul>
+          <li>Earthquakes occur when stress builds up and plates suddenly slip at a fault</li>
+          <li>Seismic waves travel outward from the focus; measured by seismometers</li>
+          <li>Volcanoes form where magma reaches the surface through vents</li>
+          <li>Both occur most often at plate boundaries</li>
+        </ul>
+      </div>
+      <div class="exam-tip">Explain plate movement using convection: "Convection currents in the mantle transfer heat upward from the core, causing mantle material to rise, cool, spread, then sink, dragging plates along with it."</div>
+    </div>
+
+    <!-- ROCK CYCLE -->
+    <div class="section" id="earth-rocks">
+      <div class="section-header">
+        <span class="section-num">E.02</span>
+        <h2>The Rock Cycle</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Three rock types</h3>
+        <table class="compare-table">
+          <tr><th>Rock type</th><th>How formed</th><th>Key features</th><th>Examples</th></tr>
+          <tr><td><strong>Igneous</strong></td><td>Magma or lava cools and solidifies</td><td>Crystals (large = slow cooling underground; small = fast cooling on surface); no fossils</td><td>Granite (intrusive), Basalt (extrusive)</td></tr>
+          <tr><td><strong>Sedimentary</strong></td><td>Sediments compacted and cemented over time</td><td>Layers (strata); may contain fossils; permeable (porous)</td><td>Sandstone, limestone, chalk, mudstone</td></tr>
+          <tr><td><strong>Metamorphic</strong></td><td>Existing rock altered by heat and/or pressure (without melting)</td><td>No fossils; may have wavy bands; recrystallised; hard</td><td>Marble (from limestone), Slate (from mudstone)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Rock cycle processes</h3>
+        <div class="flow">
+          <span class="flow-step">Weathering &amp; erosion</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Transport</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Deposition</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Compaction/cementation → sedimentary rock</span>
+        </div>
+        <div class="flow" style="margin-top:10px">
+          <span class="flow-step">Heat + pressure</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Metamorphic rock</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Melting → magma</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Cooling → igneous rock</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Weathering types</h3>
+        <table class="compare-table">
+          <tr><th>Type</th><th>How it works</th></tr>
+          <tr><td><strong>Physical (mechanical)</strong></td><td>Freeze-thaw: water enters cracks, freezes, expands, widens crack; thermal expansion: heating and cooling cracks rock</td></tr>
+          <tr><td><strong>Chemical</strong></td><td>Acid rain (carbonic acid) dissolves limestone (carbonation); oxidation of iron minerals</td></tr>
+          <tr><td><strong>Biological</strong></td><td>Plant roots grow into cracks and widen them; lichens secrete acids</td></tr>
+        </table>
+      </div>
+      <div class="key-fact">Crystal size in igneous rocks is the key to identifying where they formed: large crystals = cooled slowly underground (intrusive/plutonic); small crystals = cooled quickly at surface (extrusive/volcanic).</div>
+      <div class="exam-tip">Fossils are only found in sedimentary rocks — the other two types involve heat or pressure that would destroy organic remains. This is a very common question.</div>
+    </div>
+
+    <!-- EARTH RESOURCES -->
+    <div class="section" id="earth-resources">
+      <div class="section-header">
+        <span class="section-num">E.03</span>
+        <h2>Earth's Resources</h2>
+        <span class="freq-tag freq-med">Medium frequency</span>
+      </div>
+      <div class="card">
+        <h3>Fossil fuels</h3>
+        <ul>
+          <li>Coal, oil, and natural gas formed from the remains of ancient organisms over millions of years</li>
+          <li>Non-renewable — once used, cannot be replaced on a human timescale</li>
+          <li>Burning releases CO₂ → greenhouse effect → climate change</li>
+          <li>Also release SO₂ and NOₓ → acid rain</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Renewable energy sources</h3>
+        <table class="compare-table">
+          <tr><th>Source</th><th>How it works</th><th>Advantages</th><th>Disadvantages</th></tr>
+          <tr><td>Solar</td><td>Photovoltaic cells convert sunlight to electricity</td><td>Clean; no fuel cost</td><td>No output at night; expensive to set up</td></tr>
+          <tr><td>Wind</td><td>Wind turns turbines</td><td>Clean; low running cost</td><td>Intermittent; noisy; visual impact</td></tr>
+          <tr><td>Hydroelectric</td><td>Falling water turns turbines</td><td>Reliable; can store water</td><td>Flooding habitats; high construction cost</td></tr>
+          <tr><td>Geothermal</td><td>Heat from Earth's interior heats water to drive turbines</td><td>Continuous; low emissions</td><td>Only viable in volcanic regions</td></tr>
+          <tr><td>Tidal/Wave</td><td>Motion of sea drives turbines</td><td>Predictable tides</td><td>High construction cost; impacts sea life</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Water cycle</h3>
+        <div class="flow">
+          <span class="flow-step">Evaporation (oceans/lakes)</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Condensation → clouds</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Precipitation (rain/snow)</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Run-off / infiltration</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Returns to oceans</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATMOSPHERE -->
+    <div class="section" id="earth-atmosphere">
+      <div class="section-header">
+        <span class="section-num">E.04</span>
+        <h2>The Atmosphere &amp; Climate</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Composition of the atmosphere</h3>
+        <table class="compare-table">
+          <tr><th>Gas</th><th>Approximate % (dry air)</th></tr>
+          <tr><td>Nitrogen (N₂)</td><td>78%</td></tr>
+          <tr><td>Oxygen (O₂)</td><td>21%</td></tr>
+          <tr><td>Argon (Ar)</td><td>~1%</td></tr>
+          <tr><td>Carbon dioxide (CO₂)</td><td>~0.04%</td></tr>
+          <tr><td>Other trace gases + water vapour</td><td>Small amounts</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>The greenhouse effect</h3>
+        <ul>
+          <li>Sun emits short-wave radiation → passes through atmosphere → warms Earth's surface</li>
+          <li>Earth re-emits longer-wave infrared (heat) radiation</li>
+          <li>Greenhouse gases (CO₂, methane, water vapour) absorb this infrared and re-emit it back toward Earth</li>
+          <li><strong>Natural greenhouse effect</strong> keeps Earth warm enough for life</li>
+          <li><strong>Enhanced greenhouse effect</strong> — human activities increase CO₂ and methane → more heat trapped → global warming</li>
+        </ul>
+        <div class="key-fact">Sources of increased CO₂: burning fossil fuels, deforestation. Sources of increased methane: cattle farming, landfill, rice paddies.</div>
+      </div>
+      <div class="card">
+        <h3>Effects of climate change</h3>
+        <ul>
+          <li>Rising global average temperatures</li>
+          <li>Melting polar ice caps and glaciers → sea level rise → coastal flooding</li>
+          <li>More extreme weather events (storms, droughts, floods)</li>
+          <li>Shifts in habitats and species ranges; increased extinction risk</li>
+          <li>Disruption of agriculture and food supply</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Acid rain</h3>
+        <ul>
+          <li>SO₂ and NOₓ released by burning fossil fuels dissolve in rain to form sulfuric and nitric acids</li>
+          <li>pH of normal rain: ~5.6 (slightly acidic due to dissolved CO₂); acid rain: pH 4–4.5</li>
+          <li>Effects: damages forests, acidifies lakes (kills fish), erodes limestone buildings and statues</li>
+        </ul>
+      </div>
+      <div class="exam-tip">Know the difference between the greenhouse effect (natural and necessary) and the enhanced greenhouse effect (human-caused, leading to climate change). Examiners penalise vague answers that don't make this distinction.</div>
+    </div>
+
+    <!-- SOLAR SYSTEM -->
+    <div class="section" id="earth-solar">
+      <div class="section-header">
+        <span class="section-num">E.05</span>
+        <h2>The Solar System</h2>
+        <span class="freq-tag freq-high">Very high frequency</span>
+      </div>
+      <div class="card">
+        <h3>Structure of the solar system</h3>
+        <ul>
+          <li>The Sun is a star at the centre — composed mainly of hydrogen and helium</li>
+          <li>Energy produced by nuclear fusion in the Sun's core (hydrogen → helium)</li>
+          <li>8 planets orbit the Sun in elliptical orbits</li>
+          <li>Order from the Sun: <strong>Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune</strong></li>
+          <li>Inner planets (Mercury to Mars) are small, rocky; outer planets are gas giants</li>
+          <li>Asteroid belt between Mars and Jupiter</li>
+        </ul>
+        <div class="key-fact">Mnemonic: <em>My Very Educated Mother Just Served Us Noodles</em> — Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune</div>
+      </div>
+      <div class="card">
+        <h3>Moons and orbital motion</h3>
+        <ul>
+          <li>Moons orbit planets; planets orbit the Sun</li>
+          <li>Gravity is the force that keeps objects in orbit</li>
+          <li>Closer to the Sun = faster orbital speed; shorter orbital period (year)</li>
+          <li>The Moon orbits Earth in approximately 28 days; causes tides through gravity</li>
+          <li>Earth orbits the Sun in 365.25 days (1 year)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Day, night and seasons</h3>
+        <ul>
+          <li><strong>Day and night:</strong> caused by Earth's rotation on its own axis (24 hours)</li>
+          <li><strong>Seasons:</strong> caused by the tilt of Earth's axis (23.5°) as it orbits the Sun — NOT because Earth is closer/further from the Sun</li>
+          <li>When the Northern Hemisphere is tilted toward the Sun → summer (more daylight, Sun higher, more intense radiation per area)</li>
+          <li>Southern Hemisphere has opposite seasons to Northern Hemisphere</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Eclipses</h3>
+        <table class="compare-table">
+          <tr><th>Type</th><th>What happens</th><th>Frequency</th></tr>
+          <tr><td><strong>Solar eclipse</strong></td><td>Moon passes between Earth and Sun, blocking sunlight; shadow falls on part of Earth</td><td>Rare — Moon's orbit is tilted</td></tr>
+          <tr><td><strong>Lunar eclipse</strong></td><td>Earth passes between Sun and Moon; Earth's shadow falls on the Moon; Moon appears red/orange</td><td>More common than solar</td></tr>
+        </table>
+      </div>
+      <div class="warn-box">Common mistake: Seasons are caused by the tilt of Earth's axis, NOT by Earth being closer to or further from the Sun. Earth is actually slightly closer to the Sun in the Northern Hemisphere's winter.</div>
+      <div class="exam-tip">If asked about seasons, always mention: axis tilt → angle at which sunlight hits the surface → intensity of solar radiation per unit area AND length of day. Both factors matter.</div>
+    </div>
+
+    <!-- UNIVERSE -->
+    <div class="section" id="earth-universe">
+      <div class="section-header">
+        <span class="section-num">E.06</span>
+        <h2>Stars, Galaxies &amp; the Universe</h2>
+        <span class="freq-tag freq-med">Medium frequency</span>
+      </div>
+      <div class="card">
+        <h3>The life cycle of a star</h3>
+        <div class="flow">
+          <span class="flow-step">Nebula (gas + dust cloud)</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Protostar</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Main sequence star (like our Sun)</span>
+        </div>
+        <div class="flow" style="margin-top:8px">
+          <span class="flow-step">Small/medium star:</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Red giant</span><span class="flow-arrow">→</span>
+          <span class="flow-step">White dwarf</span>
+        </div>
+        <div class="flow" style="margin-top:8px">
+          <span class="flow-step">Massive star:</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Red supergiant</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Supernova</span><span class="flow-arrow">→</span>
+          <span class="flow-step">Neutron star / Black hole</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Stars and nuclear fusion</h3>
+        <ul>
+          <li>Stars are powered by nuclear fusion — hydrogen nuclei fuse to form helium, releasing enormous energy</li>
+          <li>Our Sun is in its main sequence phase, fusing hydrogen for ~10 billion years total</li>
+          <li>Heavier elements (carbon, oxygen, iron) are made by fusion in larger stars and during supernovae — all elements heavier than hydrogen were made in stars</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The universe — scale and structure</h3>
+        <ul>
+          <li>Stars → grouped in <strong>galaxies</strong> (our galaxy: the <strong>Milky Way</strong>, ~200 billion stars)</li>
+          <li>Galaxies → grouped in clusters and superclusters → the <strong>Universe</strong></li>
+          <li>The Universe is approximately 13.8 billion years old</li>
+          <li><strong>Big Bang theory:</strong> the Universe began from an extremely hot, dense point ~13.8 billion years ago and has been expanding ever since</li>
+          <li>Evidence: galaxies are moving away from us (red shift); cosmic microwave background radiation</li>
+        </ul>
+        <div class="key-fact">Red shift: light from distant galaxies is shifted toward the red end of the spectrum because galaxies are moving away — the further the galaxy, the greater the red shift. This is evidence for the expanding Universe and the Big Bang.</div>
+      </div>
+      <div class="card">
+        <h3>Distances in space</h3>
+        <ul>
+          <li>Light-year: distance light travels in one year (~9.46 × 10¹⁵ m)</li>
+          <li>Light takes 8 minutes from Sun to Earth</li>
+          <li>Light takes ~4.2 years from the nearest star (Proxima Centauri) to Earth</li>
+          <li>Diameter of the Milky Way: ~100,000 light-years</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- EARTH TECHNIQUE -->
+    <div class="section" id="earth-technique">
+      <div class="section-header">
+        <span class="section-num">E.07</span>
+        <h2>Exam Technique — Earth &amp; Space</h2>
+      </div>
+      <div class="summary-band">
+        <h4>Top 10 must-know Earth &amp; Space facts</h4>
+        <ul>
+          <li>Earth's layers: inner core (solid) → outer core (liquid) → mantle (semi-molten) → crust (solid)</li>
+          <li>Tectonic plates move due to convection currents in the mantle</li>
+          <li>Igneous: cooled magma; Sedimentary: compressed layers (has fossils); Metamorphic: heat/pressure</li>
+          <li>Crystal size in igneous rock = clue to cooling rate (large = slow = underground)</li>
+          <li>Atmosphere: 78% N₂, 21% O₂, 0.04% CO₂</li>
+          <li>Greenhouse gases trap infrared radiation → warming Earth</li>
+          <li>Seasons: caused by Earth's axial tilt, NOT distance from Sun</li>
+          <li>Planet order: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune</li>
+          <li>Stars powered by nuclear fusion (hydrogen → helium)</li>
+          <li>Red shift of galaxies = evidence for expanding universe and Big Bang</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Common mark-scheme phrases</h3>
+        <div class="key-fact">For tectonic plate questions: "Convection currents in the mantle carry the plates [direction] as the [hot/cooling] mantle material rises/sinks."<br><br>For climate change questions: always link human activity → increased greenhouse gas → more infrared absorbed → more heat retained → temperature rises.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Cambridge Lower Secondary Checkpoint · Science 0893 · Complete Revision Guide · Biology · Chemistry · Physics · Earth &amp; Space · For personal study use only
+</div>
+
+<script>
+  const strands = {
+    bio:   { accent: '#2d6a4f', light: '#d8f3dc', mid: '#52b788', word: 'BIOLOGY',   title: 'Biology<br>Study Guide',    desc: 'Complete revision notes for all Biology topics — cells, genetics, ecosystems, body systems, health and disease — with exam tips and model answers.' },
+    chem:  { accent: '#7b2d8b', light: '#f3d8fa', mid: '#b06bbf', word: 'CHEMISTRY', title: 'Chemistry<br>Study Guide',  desc: 'Full Chemistry revision: states of matter, atomic structure, bonding, reactions, acids, the periodic table, and carbon chemistry.' },
+    phys:  { accent: '#1b4d7a', light: '#dbeafe', mid: '#4a8fc4', word: 'PHYSICS',   title: 'Physics<br>Study Guide',    desc: 'Complete Physics notes: forces, energy, waves, light, electricity, magnetism — all with key equations, exam technique, and worked examples.' },
+    earth: { accent: '#8a4914', light: '#fde8d0', mid: '#c47c3a', word: 'EARTH',     title: 'Earth &amp; Space<br>Study Guide', desc: 'Earth and Space revision: rock cycle, plate tectonics, atmosphere, climate change, the solar system, stars and the universe.' },
+  };
+
+  function switchStrand(strand) {
+    const s = strands[strand];
+
+    // Update CSS variables
+    document.documentElement.style.setProperty('--accent', s.accent);
+    document.documentElement.style.setProperty('--accent-light', s.light);
+    document.documentElement.style.setProperty('--accent-mid', s.mid);
+
+    // Update hero
+    const hero = document.getElementById('hero');
+    hero.style.background = s.accent;
+    hero.setAttribute('data-word', s.word);
+    document.getElementById('hero-title').innerHTML = s.title;
+    document.getElementById('hero-desc').textContent = s.desc.replace(/&amp;/g, '&');
+
+    // Switch panels
+    document.querySelectorAll('.strand-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + strand).classList.add('active');
+
+    // Switch buttons
+    document.querySelectorAll('.strand-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-strand="' + strand + '"]').classList.add('active');
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
